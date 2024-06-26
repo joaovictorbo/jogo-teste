@@ -25,9 +25,10 @@ class Team:
                         break
                     
 class Game:
-                def __init__(self, team1, team2):
+                def __init__(self, team1, team2,screen):
                     self.team1 = team1
                     self.team2 = team2
+                    self.screen = screen
                 
                 def turn(self,charater,charater2,teamtarget):
                     print(charater.name + " attacks " + charater2.name)
@@ -56,11 +57,11 @@ class Game:
 
 
                 def search_attack(self,index,character,teamtarget):
-                                
                                 for k in range(2):
                                     character2 = teamtarget.characters[k][index]
                                     if character2 is not None and character2[0] is not None:
                                         self.turn(character, character2[0],teamtarget)
+                                        self.show(character2[1],character2[2])
                                         break  
                                     if index+1 < 3 :
                                         if teamtarget.characters[k][index+1] is not None and teamtarget.characters[k][index+1][0]:
@@ -86,7 +87,14 @@ class Game:
                                             self.turn(character, character2[0],teamtarget)
                                             break  # Exit the loop when an attack occurs
                                     
-                                    
+                def show(self,x,y):
+                    font = pygame.font.Font(None, 36)
+                    text = font.render(str("POW"), True, (255, 255, 255))
+                    text_rect = text.get_rect()
+                    text_rect.center = (x, y - 40)
+                    self.screen.blit(text, text_rect)
+                    pygame.display.flip()
+                    pygame.time.wait(500)                 
                 def play(self):
                         for i in range(2):
                             for j in range(3):
@@ -135,7 +143,7 @@ class Character:
                 self.skills = []
 
                 if class_name == "Damage":
-                    self.damage = 10 + random.randint(1, 10)
+                    self.damage = 20 + random.randint(1, 10)
                     self.hp = 80
                     self.max_hp = 80
                     self.velocity = random.randint(1, 10)
@@ -146,8 +154,8 @@ class Character:
                     self.velocity = random.randint(1, 5)
                 elif class_name == "Tank":
                     self.damage = 5 + random.randint(1, 2)
-                    self.hp = 300
-                    self.max_hp = 300
+                    self.hp = 200
+                    self.max_hp = 200
                     self.velocity = random.randint(1, 3)
                     
 
@@ -161,7 +169,7 @@ class Character:
                 if self.special_attack:
                     damage *= 2
                 return damage
-            def draw(self, screen,x,y):
+            def draw(self,screen,x,y):
                 font = pygame.font.Font(None, 36)
                 text = font.render(self.name, True, (255, 255, 255))
                 text_rect = text.get_rect()
@@ -169,6 +177,7 @@ class Character:
                 screen.blit(text, text_rect)
                 pygame.draw.rect(screen, (255, 0, 0), (x - 40, y - 50, (self.max_hp/self.max_hp)*80, 10))
                 pygame.draw.rect(screen, (0, 255, 0), (x - 40, y - 50, (self.hp/self.max_hp)*80, 10))
+                pygame.display.flip()
 
 
 
